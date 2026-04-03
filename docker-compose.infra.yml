@@ -1,14 +1,13 @@
 version: "3.9"
 
-# Shared network — all ShopMicro services join this
+# Shared network — all GameHub services join this
 networks:
-  shopmicro:
-    name: shopmicro
+  gamehub:
+    name: gamehub
 
 volumes:
   postgres_data:
   redis_data:
-  mongo_data:
   rabbitmq_data:
   kafka_data:
   prometheus_data:
@@ -24,17 +23,17 @@ services:
   postgres:
     image: postgres:16-alpine
     environment:
-      POSTGRES_USER: ${POSTGRES_USER:-shopmicro}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-shopmicro_pass}
+      POSTGRES_USER: ${POSTGRES_USER:-gamehub}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-gamehub_pass}
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./infra/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - "5432:5432"
     networks:
-      - shopmicro
+      - gamehub
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-shopmicro}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-gamehub}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -47,23 +46,9 @@ services:
     ports:
       - "6379:6379"
     networks:
-      - shopmicro
+      - gamehub
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
-  mongo:
-    image: mongo:7
-    volumes:
-      - mongo_data:/data/db
-    ports:
-      - "27017:27017"
-    networks:
-      - shopmicro
-    healthcheck:
-      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -83,7 +68,7 @@ services:
       - "5672:5672"
       - "15672:15672"   # Management UI → http://localhost:15672
     networks:
-      - shopmicro
+      - gamehub
     healthcheck:
       test: ["CMD", "rabbitmq-diagnostics", "ping"]
       interval: 10s
@@ -96,7 +81,7 @@ services:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
     networks:
-      - shopmicro
+      - gamehub
 
   kafka:
     image: confluentinc/cp-kafka:7.6.1
@@ -114,7 +99,7 @@ services:
     ports:
       - "29092:29092"   # Host access for local tools
     networks:
-      - shopmicro
+      - gamehub
     healthcheck:
       test: ["CMD-SHELL", "kafka-broker-api-versions --bootstrap-server localhost:9092"]
       interval: 15s
@@ -137,7 +122,7 @@ services:
     ports:
       - "8080:8080"
     networks:
-      - shopmicro
+      - gamehub
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:8080/health/ready || exit 1"]
       interval: 30s
@@ -168,7 +153,7 @@ services:
       - "80:80"
       - "8088:8080"   # Traefik dashboard → http://localhost:8088
     networks:
-      - shopmicro
+      - gamehub
 
   # ─────────────────────────────────────────────────────────────
   # Observability
@@ -186,7 +171,7 @@ services:
     ports:
       - "9090:9090"
     networks:
-      - shopmicro
+      - gamehub
 
   grafana:
     image: grafana/grafana:10.4.2
@@ -200,7 +185,7 @@ services:
     ports:
       - "3000:3000"   # Grafana → http://localhost:3000  (admin/admin)
     networks:
-      - shopmicro
+      - gamehub
     depends_on:
       - prometheus
       - loki
@@ -214,7 +199,7 @@ services:
       - "4317:4317"     # OTLP gRPC (services send traces here)
       - "4318:4318"     # OTLP HTTP
     networks:
-      - shopmicro
+      - gamehub
 
   loki:
     image: grafana/loki:2.9.7
@@ -225,7 +210,7 @@ services:
     ports:
       - "3100:3100"
     networks:
-      - shopmicro
+      - gamehub
 
   promtail:
     image: grafana/promtail:2.9.7
@@ -235,6 +220,6 @@ services:
       - ./infra/promtail/promtail-config.yaml:/etc/promtail/promtail-config.yaml
     command: -config.file=/etc/promtail/promtail-config.yaml
     networks:
-      - shopmicro
+      - gamehub
     depends_on:
       - loki

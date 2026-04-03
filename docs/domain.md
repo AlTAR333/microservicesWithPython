@@ -1,0 +1,3 @@
+# Primary Domain
+
+The primary domain of this project is a social platform for gamers centered around community connection, game discovery, and engagement tracking. Users can share what they're playing, see what friends are playing, and connect with others based on their specific game titles, genres, or play styles. It also features personalized game recommendations based on historical play data and community interests.

@@ -1,7 +1,7 @@
 apiVersion: 1
 providers:
-  - name: ShopMicro
-    folder: ShopMicro
+  - name: GameHub
+    folder: GameHub
     type: file
     options:
       path: /var/lib/grafana/dashboards

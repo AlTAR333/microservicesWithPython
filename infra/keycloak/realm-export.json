@@ -1,5 +1,5 @@
 {
-  "realm": "shopmicro",
+  "realm": "gamehub",
   "enabled": true,
   "sslRequired": "none",
   "registrationAllowed": true,
@@ -10,7 +10,7 @@
   "bruteForceProtected": true,
   "clients": [
     {
-      "clientId": "shopmicro-client",
+      "clientId": "gamehub-client",
       "enabled": true,
       "publicClient": false,
       "secret": "change_me_in_prod",
@@ -22,7 +22,7 @@
       "authorizationServicesEnabled": false
     },
     {
-      "clientId": "shopmicro-m2m",
+      "clientId": "gamehub-m2m",
       "enabled": true,
       "publicClient": false,
       "secret": "m2m_secret_change_me",
@@ -32,24 +32,24 @@
   ],
   "roles": {
     "realm": [
-      {"name": "customer", "description": "Regular customer"},
-      {"name": "admin", "description": "Store administrator"}
+      {"name": "gamer", "description": "Regular gamer"},
+      {"name": "admin", "description": "Platform administrator"}
     ]
   },
   "users": [
     {
       "username": "testuser",
       "enabled": true,
-      "email": "testuser@shopmicro.local",
+      "email": "testuser@gamehub.local",
       "credentials": [{"type": "password", "value": "password", "temporary": false}],
-      "realmRoles": ["customer"]
+      "realmRoles": ["gamer"]
     },
     {
       "username": "admin",
       "enabled": true,
-      "email": "admin@shopmicro.local",
+      "email": "admin@gamehub.local",
       "credentials": [{"type": "password", "value": "admin", "temporary": false}],
-      "realmRoles": ["admin", "customer"]
+      "realmRoles": ["admin", "gamer"]
     }
   ]
 }
