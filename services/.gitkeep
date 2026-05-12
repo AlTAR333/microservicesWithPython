@@ -10,4 +10,4 @@
 # ├── game-service/          (Module 2)
 # ├── activity-service/      (Module 3)
 # ├── notification-service/  (Module 4 — Node.js + SQLite, always local)
-# └── logging-service/       (Module 4 — GDPR consent + Kafka consumer)
+# └── logging-service/       (Module 4 — GDPR consent + RabbitMQ consumer)

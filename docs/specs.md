@@ -1,6 +1,6 @@
 # Tech Stack
 
-On the Python side for the microservices, most services use FastAPI for the API framework. The exception is the logging-service, which runs on **Flask** with SQLAlchemy and Flask-Migrate for database migrations (PostgreSQL from Module 8, SQLite for local development). SQLAlchemy handles the database relationship mapping, Pydantic handles schema validation for FastAPI services, and a native `auth-service` (built with FastAPI, `python-jose`, and `passlib`) handles authentication and JWT token management. Kafka handles real-time event streaming, and RabbitMQ handles background task messaging. The databases include PostgreSQL for relational storage (from Module 8) and Redis for caching. SQLite is used for local development in Modules 1–7.
+On the Python side for the microservices, most services use FastAPI for the API framework. The exception is the logging-service, which runs on **Flask** with SQLAlchemy and Flask-Migrate for database migrations (PostgreSQL from Module 8, SQLite for local development). SQLAlchemy handles the database relationship mapping, Pydantic handles schema validation for FastAPI services, and a native `auth-service` (built with FastAPI, `python-jose`, and `passlib`) handles authentication and JWT token management. RabbitMQ handles all async messaging — both background notifications and activity logging. The databases include PostgreSQL for relational storage (from Module 8) and Redis for caching. SQLite is used for local development in Modules 1–7.
 
 The notification-service runs on Node.js with SQLite — always local, never containerized. GitHub Actions manages Docker deployments and the CI/CD pipeline.
 
@@ -18,11 +18,10 @@ In Modules 1–7, the logging-service uses SQLite for consent storage. From Modu
 
 ## Stack Overview
 
-The stack is a combination of microservices, Kafka, RabbitMQ, PostgreSQL, Redis, SQLite, Node.js, and Docker.
+The stack is a combination of microservices, RabbitMQ, PostgreSQL, Redis, SQLite, Node.js, and Docker.
 
 - Microservices: FastAPI, SQLAlchemy, Pydantic, python-jose (JWT), passlib (passwords)
-- Kafka: Real-time event streaming (activity → logging)
-- RabbitMQ: Background tasks (activity → notification)
+- RabbitMQ: Async messaging (activity → notification, activity → logging)
 - PostgreSQL: Relational storage (production, from Module 8)
 - SQLite: Local development storage (Modules 1–7), notification-service (always)
 - Redis: Caching

@@ -6,7 +6,7 @@ You are going to build a real distributed system from scratch — one service at
 
 By the end of this course, you will have a running gamer social platform where:
 - A user signs up, manages their profile, and tracks their game library
-- Activity events flow through Kafka to a GDPR-compliant logging service
+- Activity events flow asynchronously via RabbitMQ to a GDPR-compliant logging service
 - Notifications are sent asynchronously via RabbitMQ
 - Every request is authenticated and traceable across services
 - The whole thing runs in Docker with a single command
@@ -140,13 +140,13 @@ docker compose \
    │user-service│     │game-service│     │activity-service│
    │ PostgreSQL │     │ PostgreSQL │     │ PostgreSQL     │
    └────────────┘     │ + Redis    │     └───────┬────────┘
-                      └────────────┘        RabbitMQ │ Kafka
+                      └────────────┘              RabbitMQ
                                         ┌────────────┴─────────────┐
                                         ▼                           ▼
                        ┌─────────────────────┐    ┌──────────────────────┐
                        │notification-service │    │  logging-service     │
                        │ Node.js + SQLite    │    │  PostgreSQL          │
-                       │ RabbitMQ consumer   │    │  Kafka consumer      │
+                       │ RabbitMQ consumer   │    │  RabbitMQ consumer   │
                        │ (always local)      │    │  GDPR consent        │
                        └─────────────────────┘    └──────────────────────┘
 

@@ -50,7 +50,7 @@ Example:
 ```
 activity-service → logging-service
 Trigger: an activity is logged
-Protocol: Kafka event (async — why not REST here?)
+Protocol: RabbitMQ message (async — why not REST here?)
 Payload: { activity_id, user_id, action, game_id, timestamp }
 ```
 
