@@ -11,7 +11,6 @@ ROUTES: dict[str, str] = {
     "activities": settings.activity_service_url,
 }
 
-
 @app.get("/health")
 async def health():
     return {"status": "ok", "service": "gateway"}

@@ -1,7 +1,7 @@
 # Module 3 — Synchronous Communication
 
 **Duration**: 2h in class
-**Branch to submit**: `module-03/<team-name>`
+**Branch to submit**: `module-03/armand`
 
 ---
 
