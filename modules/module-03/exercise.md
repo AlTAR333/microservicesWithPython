@@ -74,6 +74,11 @@ These two calls are handled differently on purpose:
 - Validation is **critical** — the request must not proceed if the user doesn't exist. It retries on transient errors.
 - Enrichment is **optional** — the activity is saved regardless. It fails gracefully with a null fallback.
 
+> **Why is there no `seed.py` for activity-service?**
+> `user-service` and `game-service` each have a self-contained `seed.py` that inserts rows directly into their own database. That works because they own their data entirely.
+> Activity-service can't do the same — it doesn't own user IDs or game IDs. A seed script for activities would have to call the APIs of both other services to fetch real UUIDs first, and only then POST to activity-service. It only works when the full stack is running.
+> That dependency is not a problem to fix — it is the point. Each service owns its data, and that constraint has real operational consequences. You'll create activities live during this module as part of testing, which is exactly the right way to exercise the inter-service calls you're about to implement.
+
 Open `services/activity-service/app/main.py` and implement both functions. The signatures and the expected response shape are documented in `docs/api-contracts.md`.
 
 Once implemented, start activity-service and add it to the running stack:
