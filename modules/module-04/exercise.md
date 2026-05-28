@@ -43,7 +43,7 @@ Confirm it's up:
 
 - RabbitMQ is running via Docker. You do not need to configure it.
 - `rabbitmq_publisher.py` is scaffolded in `services/activity-service/app/infrastructure/` — the connection and publish logic is done, you fill in the call site.
-- `notification-service` is already built (Node.js) and running on port 8004.
+- `notification-service` is already built (Node.js) — you started it above.
 
 Install the new dependency in `activity-service`:
 
