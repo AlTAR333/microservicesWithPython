@@ -9,6 +9,7 @@
 import httpx
 from fastapi import Depends, FastAPI, HTTPException
 from sqlalchemy.orm import Session
+from app.rabbitmq_publisher import publish_message
 
 from app.config import settings
 from app.database import Base, engine, get_db
@@ -73,14 +74,14 @@ async def create_activity(data: schemas.ActivityCreate, db: Session = Depends(ge
     await validate_user(data.user_id)
     activity = repository.create_activity(db, data)
     game_data = await fetch_game(activity.game_id)
-    return {
-        "id": activity.id,
-        "user_id": activity.user_id,
-        "action": activity.action,
-        "duration_minutes": activity.duration_minutes,
-        "created_at": activity.created_at,
-        "game": game_data,
-    }
+    result = schemas.ActivityOut.model_validate(activity)
+    result.game = game_data
+    publish_message(
+        exchange="gamehub.events",
+        routing_key="activity.logged",
+        payload=result.model_dump()
+    )
+    return result
 
 
 @app.get("/v1/activities", response_model=schemas.ActivityList)
