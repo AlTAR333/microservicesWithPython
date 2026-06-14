@@ -14,12 +14,13 @@ app.add_middleware(
 )
 
 ROUTES: dict[str, str] = {
-    "users":      settings.user_service_url,
-    "games":      settings.game_service_url,
-    "activities": settings.activity_service_url,
+    "users":         settings.user_service_url,
+    "games":         settings.game_service_url,
+    "activities":    settings.activity_service_url,
     "notifications": settings.notification_service_url,
-    "consent": settings.logging_service_url,
-    "logs":    settings.logging_service_url,
+    "consent":       settings.logging_service_url,
+    "logs":          settings.logging_service_url,
+    "auth":          settings.auth_service_url
 }
 
 @app.get("/health")

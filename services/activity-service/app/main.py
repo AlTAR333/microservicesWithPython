@@ -10,6 +10,8 @@ import httpx
 from fastapi import Depends, FastAPI, HTTPException
 from sqlalchemy.orm import Session
 from app.rabbitmq_publisher import publish_message
+from app.infrastructure.auth_client import get_auth_headers
+from tenacity import retry, stop_after_attempt, wait_fixed, retry_if_exception_type
 
 from app.config import settings
 from app.database import Base, engine, get_db
@@ -24,6 +26,12 @@ app = FastAPI(title="activity-service")
 # YOUR TASK — implement the two functions below
 # ---------------------------------------------------------------------------
 
+@retry(
+    stop=stop_after_attempt(3),
+    wait=wait_fixed(2),
+    retry=retry_if_exception_type(httpx.RequestError),
+    reraise=True
+)
 async def validate_user(user_id: str) -> None:
     """
     Verify that the user exists in user-service before logging an activity.
@@ -40,7 +48,18 @@ async def validate_user(user_id: str) -> None:
     Use `async with httpx.AsyncClient(timeout=5.0) as client:` for HTTP calls.
     This call is CRITICAL — the request must not proceed if validation fails.
     """
-    raise NotImplementedError
+    url = f"{settings.user_service_url}/v1/users/{user_id}"
+    try:
+        headers = await get_auth_headers()
+        async with httpx.AsyncClient(timeout=3.0) as client:
+            response = await client.get(url, headers=headers)
+        if response.status_code == 404:
+            raise HTTPException(status_code=404, detail=f"User {user_id} not found")    
+        response.raise_for_status() 
+    except httpx.HTTPStatusError as e:
+        if e.response.status_code >= 500:
+            raise httpx.RequestError("User service returned a server error") from e
+        raise
 
 
 async def fetch_game(game_id: str) -> dict | None:
@@ -57,7 +76,16 @@ async def fetch_game(game_id: str) -> dict | None:
     Graceful degradation is the goal: the response will include "game": null
     when game-service is unreachable.
     """
-    raise NotImplementedError
+    url = f"{settings.game_service_url}/v1/games/{game_id}"
+    try:
+        headers = await get_auth_headers()
+        async with httpx.AsyncClient(timeout=2.0) as client:
+            response = await client.get(url, headers=headers)
+        if response.status_code == 200:
+            return response.json()
+        return None
+    except (httpx.RequestError, httpx.HTTPStatusError):
+        return None
 
 
 # ---------------------------------------------------------------------------
