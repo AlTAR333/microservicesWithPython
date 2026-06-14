@@ -1,7 +1,7 @@
 # Module 6 — Reflection
 
-**Team name**: _______________
-**Branch**: `module-06/<team-name>`
+**Team name**: Armand
+**Branch**: `module-06/armand`
 **Submitted**: before Module 7 lesson
 
 ---
@@ -18,7 +18,7 @@ The gateway now validates every JWT before forwarding a request. Individual serv
 
 Think about what happens when you need to rotate the secret key, or add a new service to the system.
 
-> *Your answer:*
+> *Your answer:* Centralising it at the gateway buys us a single source of truth. If we need to change how logins work or rotate our secret key, we only have to update the gateway. If every service did it independently, we would have to copy-paste the exact same security code into every microservice, and forgetting to update just one of them would leave the whole system vulnerable.
 
 ---
 
@@ -30,7 +30,7 @@ When activity-service calls user-service internally, it uses a Machine-to-Machin
 
 What would break, or what door would you accidentally leave open, if services passed user tokens between themselves?
 
-> *Your answer:*
+> *Your answer:* If the activity-service passed the user's token, it would be impersonating the user. It might accidentally trigger actions the user didn't ask for. By using an M2M token, the system clearly knows that a "server" is making the request, not a person. This makes our logs accurate and prevents the activity-service from overstepping its boundaries.
 
 ---
 
@@ -42,7 +42,7 @@ The gateway and the auth-service share the same `SECRET_KEY` to verify tokens wi
 
 And what would the alternative look like — verifying tokens by calling auth-service on every request instead? What does that cost you?
 
-> *Your answer:*
+> *Your answer:* The risk is that if the secret key leaks, an attacker can instantly forge their own valid JWTs and give themselves "admin" access to the entire system. The alternative would be forcing the gateway to call the auth-service to check the token on every single request. While that is much safer if a key leaks, it would create a massive traffic jam and slow down our entire app.
 
 ---
 
