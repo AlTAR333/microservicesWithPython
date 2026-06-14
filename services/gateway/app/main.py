@@ -1,13 +1,26 @@
 import httpx
 from fastapi import FastAPI, Request, Response
+from fastapi.middleware.cors import CORSMiddleware
+
 from app.config import settings
 
 app = FastAPI(title="gateway", version="1.0.0")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 ROUTES: dict[str, str] = {
-    "users":      settings.user_service_url,
-    "games":      settings.game_service_url,
-    "activities": settings.activity_service_url,
+    "users":         settings.user_service_url,
+    "games":         settings.game_service_url,
+    "activities":    settings.activity_service_url,
     "notifications": settings.notification_service_url,
+    "consent":       settings.logging_service_url,
+    "logs":          settings.logging_service_url,
+    "auth":          settings.auth_service_url
 }
 
 @app.get("/health")
