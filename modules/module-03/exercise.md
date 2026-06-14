@@ -1,7 +1,7 @@
 # Module 3 — Synchronous Communication
 
 **Duration**: 2h in class
-**Branch to submit**: `module-03/<team-name>`
+**Branch to submit**: `module-03/armand`
 
 ---
 
@@ -110,11 +110,11 @@ Check that the response includes the enriched `game` object. Then stop `game-ser
 
 ## Minimum to submit this branch
 
-- [ ] `activity-service` validates users and enriches with game data
-- [ ] Graceful degradation works: activity saved even when `game-service` is down
-- [ ] Gateway running on port 8000, routing to all three services
-- [ ] `curl http://localhost:8000/health` returns `{"status": "ok"}`
-- [ ] `REFLECTION.md` completed and committed
+- [X] `activity-service` validates users and enriches with game data
+- [X] Graceful degradation works: activity saved even when `game-service` is down
+- [X] Gateway running on port 8000, routing to all three services
+- [X] `curl http://localhost:8000/health` returns `{"status": "ok"}`
+- [X] `REFLECTION.md` completed and committed
 
 ---
 
